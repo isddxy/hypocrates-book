@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "589976586335",
+    "firebase_url": "https://hypocrates-book-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "hypocrates-book",
+    "storage_bucket": "hypocrates-book.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:589976586335:android:bcd6d52f2997f89b4cf3ea",
+        "android_client_info": {
+          "package_name": "host.exp.exponent"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB41ZcYmWczKVfZJs3RcKIm9LnttatgF04"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
