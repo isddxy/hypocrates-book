@@ -1,10 +1,13 @@
-import { StyleSheet, Text, View, Button, FlatList, StatusBar, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Button, FlatList, StatusBar, TouchableOpacity, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
-import { firebase } from '../config'
+import { firebase } from '../config';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+
 
 
 export default function TasksScreen({ navigation }) {
@@ -92,11 +95,16 @@ export default function TasksScreen({ navigation }) {
         renderItem={({item}) => <TouchableOpacity onPress={() => navigation.navigate("ViewTask")}><Item title={item.name} /></TouchableOpacity>}
         keyExtractor={item => item.id}
       />
-
+{/* 
       <Button
         title="Добавить задачу"
         onPress={() => navigation.navigate('AddTask')}
-      />
+      /> */}
+
+      <TouchableOpacity style={styles.btnAddTask} onPress={() => navigation.navigate('AddTask')}>
+        <FontAwesomeIcon icon={ faPlus } size={ 24 } color='white' />
+        {/* <Text style={styles.btnTextAddTask}>Добавить задачу</Text> */}
+      </TouchableOpacity>   
       {/* <Button
         title="Давай крутить колесо"
         onPress={() => navigation.push('Spin')}
@@ -119,11 +127,21 @@ const styles = StyleSheet.create({
   },
   taskName: {
     fontSize: 18,
-    color: '#3F3F3F'
+    color: '#3F3F3F',
   },
   title: {
     marginBottom: 10,
     textAlign: 'center',
     width: '100%'
+  },
+  btnAddTask: {
+    backgroundColor: '#48B16C',
+    width: '96%',
+    marginTop: 30,
+    borderRadius: 16,
+    paddingVertical: 16,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 });
