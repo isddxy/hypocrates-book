@@ -3,7 +3,7 @@ import React from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
-import { firebase } from '../db/config';
+import { firebase } from '../db/firestore';
 import { doc, deleteDoc } from "firebase/firestore";
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 

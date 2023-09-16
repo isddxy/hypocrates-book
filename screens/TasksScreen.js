@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { getTasks } from '../db/config';
+import db, { getTasks, streamTasks } from '../db/firestore';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faBars, faListAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faFolderClosed } from '@fortawesome/free-regular-svg-icons';
 import TaskItem from '../component/TaskItem';
 
@@ -13,33 +13,32 @@ export default function TasksScreen({ navigation }) {
 
   const insets = useSafeAreaInsets();
 
-  const [tasks, setTask] = useState([]);
+  const [tasks, setTasks] = useState([]);
 
+  const mapDocToTask = (document) => {
+    return {
+      id: document.data().id,
+      name: document.data().name,
+      createdAt: document.data().createdAt,
+      completedAt: document.data().completedAt
+    }
+  }
 
   useEffect(() => {
-    getTasks().then(tasks => setTask(tasks))
+    streamTasks({
+      next: querySnapShot => {
+        const tasks = querySnapShot
+          .docs.map(docSnapshot => mapDocToTask(docSnapshot))
+        setTasks(tasks)
+      },
+      error: (error) => console.log(error)
+    })
     console.log(tasks);
-  }, []);
 
-  // const getTasks = async () => {
-  //   setTask({});
-  //   const db = firebase.firestore();
-  //   const taskRef = db.collection('tasks');
-  //   //const snapshot = await taskRef.get();
-  //   const snapshot = await taskRef.where('isTask', '==', true).get();
-  //   if (snapshot.empty) {
-  //     console.log('Сегодня нет еще задач');
-  //     return;
-  //   }
-  //   const allTasks = snapshot.docs.map(doc => doc.data());
-  //   setTask(allTasks);
-  // };
+  }, [setTasks]);
 
   return (
-    <View style={{
-      flex: 1,
-    }}
-    >
+    <View style={styles.container}>
     <View
       style={{
         flex: 1,
@@ -53,28 +52,13 @@ export default function TasksScreen({ navigation }) {
     >
       <Text style={styles.title}>Сегодня</Text>
         <View style={styles.tasksView}>
-      {/* <FlatList
-        style={
           {
-            width: '100%',
-          }
-        }
-        data={tasks}
-        renderItem={({item}) => <TouchableOpacity  onPress={() => {
-          navigation.navigate('ViewTask', {item});
-        }}><Item title={item.name} /></TouchableOpacity>}
-        //keyExtractor={item => item.id}
-      />
-      */}
-      {/* {
-        tasks?.map(task => <View style={styles.item}>
-          <Text style={styles.taskName}>{task.name}</Text>
-          </View>)
-      } */}
-          {
-            tasks?.map(task => <TouchableOpacity key={task.id} onPress={() => {
-              navigation.navigate('ViewTask', task.id);
-            }}><TaskItem item={task} /></TouchableOpacity>)
+            tasks?.map(task => <TouchableOpacity
+              key={task.id}
+              onPress={() => {navigation.navigate('ViewTask', task.id);}}
+            >
+              <TaskItem item={task}/>
+            </TouchableOpacity>)
           }
         </View>
       </View> 
@@ -96,6 +80,9 @@ export default function TasksScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
   tasksView: {
     flex: 1,
     width: '100%',

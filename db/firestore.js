@@ -17,7 +17,6 @@ if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 
-
 const db = firebase.firestore();
 
 export const getTasks = () => {
@@ -33,4 +32,10 @@ export const getTasks = () => {
         })))
 }
 
-export { firebase };
+export const streamTasks = (observer) => {
+    db.collection('tasks').onSnapshot(observer)
+}
+
+//export { firebase };
+
+export default db;

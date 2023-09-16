@@ -14,8 +14,7 @@ import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
-import { firebase } from '../db/config';
-import  {collection,addDoc} from 'firebase/firestore';
+import db from '../db/firestore';
 
 
 export default function AddTaskScreen({ navigation }) {
@@ -56,12 +55,13 @@ export default function AddTaskScreen({ navigation }) {
     const saveTask = async () => {
         console.log(isErrorStatus);
         if (!isErrorStatus) {
-            const db = firebase.firestore();
-            await addDoc(collection(db, "tasks"), {
-                "name": inputContent.value,
-                "isInbox": true
-            });
-            navigation.navigate("Tasks")
+            db.collection('tasks').add({
+                name: inputContent.value,
+                isTask: false,
+                createdAt: new Date(),
+                completedAt: null
+            }).then(result => navigation.navigate("Tasks"))
+                .catch(err => console.log(err))
         } else {
             setError('Введите текст');
         }

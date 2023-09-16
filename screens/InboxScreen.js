@@ -1,7 +1,7 @@
 import { StyleSheet, View, Text, FlatList, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { firebase } from '../db/config';
+import { firebase } from '../db/firestore';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
 
