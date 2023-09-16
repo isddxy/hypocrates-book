@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, StatusBar } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { streamTasks } from '../db/firestore';
@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBars, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faFolderClosed } from '@fortawesome/free-regular-svg-icons';
 import TaskItem from '../component/TaskItem';
+import Button from '../component/Button';
 
 
 
@@ -41,6 +42,7 @@ export default function TasksScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle='dark-content'/>
     <View
       style={{
         flex: 1,
@@ -53,20 +55,20 @@ export default function TasksScreen({ navigation }) {
       }}
     >
       <Text style={styles.title}>Сегодня</Text>
-        <View style={styles.tasksView}>
+        <ScrollView style={styles.tasksView}>
           {
             tasks?.map(task =><TaskItem item={task} key={task.id}/>)
           }
-        </View>
+        </ScrollView>
       </View> 
       
       <View style={styles.footer}>
         <TouchableOpacity style={styles.btnAddTask} onPress={() => navigation.navigate('AddTask')}>
-          <FontAwesomeIcon icon={ faPlus } size={ 24 } color='#3F97E8' />
+          <FontAwesomeIcon icon={ faPlus } size={ 32 } color='#3F97E8' />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.btnInbox} onPress={() => navigation.navigate('Inbox')}>
-          <FontAwesomeIcon icon={ faBars } size={ 20 } color='#3F97E8' />
-        </TouchableOpacity> 
+
+        <Button bgColor='#EFF7FF' color='#3F97E8' icon={ faBars } onPress={() => navigation.navigate("Inbox")}/>
+
         <TouchableOpacity style={styles.btnProject} onPress={() => navigation.navigate('Project')}>
           <FontAwesomeIcon icon={ faFolderClosed } size={ 18 } color='black' />
           <Text style={styles.btnTextProject}>Мои проекты</Text>
@@ -83,7 +85,6 @@ const styles = StyleSheet.create({
   tasksView: {
     flex: 1,
     width: '100%',
-    justifyContent: 'flex-end',
     marginBottom: 300
   },
   item: {
@@ -106,7 +107,7 @@ const styles = StyleSheet.create({
   btnAddTask: {
     backgroundColor: '#fff',
     width: '100%',
-    marginTop: 30,
+    marginVertical: 20,
     borderRadius: 16,
     paddingVertical: 16,
     paddingVertical: 50,

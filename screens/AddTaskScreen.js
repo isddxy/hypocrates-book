@@ -17,7 +17,7 @@ import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
 import db from '../db/firestore';
 import Button from '../component/Button';
 
-export default function AddTaskScreen({ navigation: { goBack } }) {
+export default function AddTaskScreen({ navigation, navigation: { goBack } }) {
 
     const [inputContent, setInputContent] = useState({});
     const [errorStyle, setErrorStyle] = useState('none');
@@ -60,7 +60,7 @@ export default function AddTaskScreen({ navigation: { goBack } }) {
                 isTask: false,
                 createdAt: new Date(),
                 completedAt: null
-            }).then(result => navigation.navigate("Tasks"))
+            }).then(result => navigation.navigate("Inbox"))
                 .catch(err => console.log(err))
         } else {
             setError('Введите текст');
@@ -73,7 +73,7 @@ export default function AddTaskScreen({ navigation: { goBack } }) {
         style={styles.container}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <View style={styles.inner}>
-                    <Text style={styles.header}>Запись задачи</Text>
+                    <Text style={styles.header}>Новая запись</Text>
                     <View style={styles.btnsView}>
                         <TextInput
                             placeholder="Введите название"

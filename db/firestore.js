@@ -19,23 +19,40 @@ if (!firebase.apps.length) {
 
 const db = firebase.firestore();
 
-export const getTasks = () => {
-    return db.collection('tasks')
-        .get()
-        .then(result => result.docs)
-        .then(docs => docs.map(doc => ({
-        id: doc.id,
-        name: doc.data().name,
-        createdAt: doc.data().createdAt,
-        completedAt: doc.data().completedAt,
-        isTask: doc.data().isTask,
-        })))
-}
+// export const getTasks = () => {
+//     return db.collection('tasks')
+//         .get()
+//         .then(result => result.docs)
+//         .then(docs => docs.map(doc => ({
+//             id: doc.id,
+//             name: doc.data().name,
+//             createdAt: doc.data().createdAt,
+//             completedAt: doc.data().completedAt,
+//             isTask: doc.data().isTask,
+//         })))
+// }
+
+// export const getProjects = () => {
+//     return db.collection('projects')
+//         .get()
+//         .then(result => result.docs)
+//         .then(docs => docs.map(doc => ({
+//             id: doc.id,
+//             name: doc.data().name,
+//             isActive: doc.data().isActive,
+//         })))
+// }
 
 export const streamTasks = (observer) => {
-    db.collection('tasks').onSnapshot(observer)
+    db.collection('tasks').where('isTask', '==', true).onSnapshot(observer)
 }
 
-//export { firebase };
+export const streamProjects = (observer) => {
+    db.collection('projects').onSnapshot(observer)
+}
+
+export const streamInboxs = (observer) => {
+    db.collection('tasks').where('isTask', '==', false).onSnapshot(observer)
+}
 
 export default db;

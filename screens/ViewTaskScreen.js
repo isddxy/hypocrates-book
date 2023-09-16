@@ -2,14 +2,13 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import db from '../db/firestore';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faArrowLeftLong, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeftLong, faCheck, faClipboard } from '@fortawesome/free-solid-svg-icons';
 import { doc, deleteDoc } from "firebase/firestore";
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import Button from '../component/Button';
 
 
-export default function ViewTaskScreen({ route, navigation: { goBack } }) {
+export default function ViewTaskScreen({ route, navigation, navigation: { goBack } }) {
 
     const insets = useSafeAreaInsets();
 
@@ -50,16 +49,17 @@ export default function ViewTaskScreen({ route, navigation: { goBack } }) {
             </View>
             <View style={styles.info}>
                 <Text style={styles.subtitle}>Результат, который я хочу получить</Text>
-                <Text style={styles.text}>- Написать Алексею в телеграм</Text>
+                <Text style={styles.text}>- Вот здесь будет написан результат</Text>
             </View>
 
 
             <View style={styles.info}>
+                <Button bgColor='#FFF8EF' color='#B04B2B' icon={ faClipboard } onPress={() => navigation.navigate("ReviewInbox")}/>
                 <Button name='Удалить' bgColor='#FFDBDB' color='#C34E4E' icon={ faTrashCan } onPress={() => removeTask()}/>
             </View>
             <View style={styles.footer}>
                 <Button bgColor='#C2FFC0' color='#186C15' icon={ faCheck } onPress={() => navigation.navigate("Tasks")}/>
-                <Button name='Назад' bgColor='#' color='#323232' icon={ faArrowLeftLong } onPress={() => goBack()}/>
+                <Button name='Назад' bgColor='#' color='#7E7E7E' icon={ faArrowLeftLong } onPress={() => goBack()}/>
             </View>
 
         </View>
