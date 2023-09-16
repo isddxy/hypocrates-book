@@ -1,38 +1,32 @@
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import db from '../db/firestore';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
-import { firebase } from '../db/firestore';
+import { faArrowLeftLong, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { doc, deleteDoc } from "firebase/firestore";
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
+import Button from '../component/Button';
 
-export default function ViewTaskScreen({ route, navigation }) {
+
+export default function ViewTaskScreen({ route, navigation: { goBack } }) {
 
     const insets = useSafeAreaInsets();
 
-
-    const { item } = route.params;
-    console.log(item);
+    const task = route.params;
+    console.log(task);
 
     function getBackground() {
-        if (item.isTask) {
-            return 'white'
+        if (task.isTask) {
+            return 'white';
         } else {
-            return '#EFF7FF'
+            return '#EFF7FF';
         }
     }
 
     const removeTask = async () => {
-        // firebase.collection('tasks').doc(id).delete()
-        // .then(() => {
-        //     console.log('Taskr deleted!');
-        // });
-
-        await deleteDoc(doc(db, "tasks", item));
-        // .then(querySnapshot => {
-        //     querySnapshot.docs[0].ref.delete();
-        // });
+        await deleteDoc(doc(db, "tasks", task.id))
+            .then(result => navigation.navigate("Tasks"));
     };
 
     return (
@@ -41,30 +35,33 @@ export default function ViewTaskScreen({ route, navigation }) {
             flex: 1,
             backgroundColor: getBackground(),
             justifyContent: 'flex-start',
-            alignItems: 'center',
-
-            // Paddings to handle safe area
+            alignItems: 'left',
             paddingTop: insets.top,
             paddingBottom: insets.bottom,
-            paddingLeft: insets.left,
-            paddingRight: insets.right,
+            paddingLeft: insets.left + 20,
+            paddingRight: insets.right + 20,
             }}
         >
             <Text>Просмотр задачи</Text>
-            <Text style={styles.title}>{item.name}</Text>
-            <TouchableOpacity style={styles.btnRemove} onPress={() => removeTask()}>
-                <View style={styles.btnBack}>
-                    <FontAwesomeIcon icon={ faTrashCan } size={ 18 }/>
-                    <Text style={styles.btnTextBack}>Удалить</Text>
-                </View>    
-            </TouchableOpacity>
+            <Text style={styles.title}>{task.name}</Text>
+            <View style={styles.info}>
+                <Text style={styles.subtitle}>Первое действие</Text>
+                <Text style={styles.text}>- Написать Алексею в телеграм</Text>
+            </View>
+            <View style={styles.info}>
+                <Text style={styles.subtitle}>Результат, который я хочу получить</Text>
+                <Text style={styles.text}>- Написать Алексею в телеграм</Text>
+            </View>
 
-            <TouchableOpacity style={styles.btnsView} onPress={() => navigation.navigate("Tasks")}>
-                <View style={styles.btnBack}>
-                    <FontAwesomeIcon icon={ faArrowLeftLong } size={ 18 }/>
-                    <Text style={styles.btnTextBack}>Назад</Text>
-                </View>    
-            </TouchableOpacity>
+
+            <View style={styles.info}>
+                <Button name='Удалить' bgColor='#FFDBDB' color='#C34E4E' icon={ faTrashCan } onPress={() => removeTask()}/>
+            </View>
+            <View style={styles.footer}>
+                <Button bgColor='#C2FFC0' color='#186C15' icon={ faCheck } onPress={() => navigation.navigate("Tasks")}/>
+                <Button name='Назад' bgColor='#' color='#323232' icon={ faArrowLeftLong } onPress={() => goBack()}/>
+            </View>
+
         </View>
     )
 }
@@ -74,28 +71,28 @@ const styles = StyleSheet.create({
         color: 'black',
         fontSize: 48,
         textAlign: 'left',
-        paddingBottom: 300,
-        width: '86%',
+        width: '100%',
+        lineHeight: 50,
+        fontWeight: 'bold',
+        marginTop: 30
     },
-    btnsView: {
-        flexDirection: 'row',
+    info: {
+        paddingTop: 30,
+    },
+    subtitle: {
+        textAlign: 'left',
+        fontSize: 16,
+        color: '#7F7F7F'
+    },
+    text: {
+        paddingVertical: 6,
+        fontSize: 24,
+    },
+    footer: {
         position: 'absolute',
         bottom: 30,
-        justifyContent: 'center',
-    },
-    btnBack: {
-        backgroundColor: 'white',
-        width: '96%',
-        marginBottom: 0,
-        borderRadius: 16,
-        paddingVertical: 24,
-        flexDirection: 'row',
-        justifyContent: 'center',
+        width: '100%',
+        left: 20,
         alignItems: 'center',
     },
-    btnTextBack: {
-        color: 'black',
-        fontSize: 18,
-        marginLeft: 6
-    }
 });

@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import db, { getTasks, streamTasks } from '../db/firestore';
+import { streamTasks } from '../db/firestore';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faBars, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { faFolderClosed } from '@fortawesome/free-regular-svg-icons';
@@ -17,15 +17,16 @@ export default function TasksScreen({ navigation }) {
 
   const mapDocToTask = (document) => {
     return {
-      id: document.data().id,
+      id: document.id,
       name: document.data().name,
+      isTask: document.data().isTask,
       createdAt: document.data().createdAt,
       completedAt: document.data().completedAt
     }
   }
 
   useEffect(() => {
-    streamTasks({
+    const unsubscribe = streamTasks({
       next: querySnapShot => {
         const tasks = querySnapShot
           .docs.map(docSnapshot => mapDocToTask(docSnapshot))
@@ -35,6 +36,7 @@ export default function TasksScreen({ navigation }) {
     })
     console.log(tasks);
 
+    return unsubscribe;
   }, [setTasks]);
 
   return (
@@ -46,19 +48,14 @@ export default function TasksScreen({ navigation }) {
         alignItems: 'center',
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
-        paddingLeft: insets.left + 10,
-        paddingRight: insets.right + 10,
+        paddingLeft: insets.left + 20,
+        paddingRight: insets.right + 20,
       }}
     >
       <Text style={styles.title}>Сегодня</Text>
         <View style={styles.tasksView}>
           {
-            tasks?.map(task => <TouchableOpacity
-              key={task.id}
-              onPress={() => {navigation.navigate('ViewTask', task.id);}}
-            >
-              <TaskItem item={task}/>
-            </TouchableOpacity>)
+            tasks?.map(task =><TaskItem item={task} key={task.id}/>)
           }
         </View>
       </View> 

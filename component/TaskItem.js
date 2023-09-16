@@ -1,21 +1,19 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
+import { useNavigation } from '@react-navigation/native';
 
 export default function TaskItem({item}) {
+
+  const navigation = useNavigation()
+
   return (
-    <View style={styles.item}>
-      <Text style={styles.taskName}>{item.name}</Text>
-    </View>
+      <TouchableOpacity style={styles.item} onPress={() => {navigation.navigate('ViewTask', item)}}>
+        <Text style={styles.taskName}>{item.name}</Text>
+      </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
-  tasksView: {
-    flex: 1,
-    width: '100%',
-    justifyContent: 'flex-end',
-    marginBottom: 300
-  },
   item: {
     backgroundColor: '#FBFBFB',
     borderRadius: 16,
@@ -28,9 +26,4 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#3F3F3F',
   },
-  title: {
-    marginBottom: 10,
-    textAlign: 'center',
-    width: '100%'
-  }
 });

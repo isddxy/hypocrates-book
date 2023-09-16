@@ -15,9 +15,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
 import db from '../db/firestore';
+import Button from '../component/Button';
 
-
-export default function AddTaskScreen({ navigation }) {
+export default function AddTaskScreen({ navigation: { goBack } }) {
 
     const [inputContent, setInputContent] = useState({});
     const [errorStyle, setErrorStyle] = useState('none');
@@ -91,12 +91,9 @@ export default function AddTaskScreen({ navigation }) {
                             <Text style={{display: errorStyle, color: '#E56363'}}>{ errorText }</Text>
                         </View>
                     </View>
-                    <TouchableOpacity style={styles.btnsView} onPress={() => navigation.navigate("Tasks")}>
-                        <View style={styles.btnBack}>
-                            <FontAwesomeIcon icon={ faArrowLeftLong } size={ 18 }/>
-                            <Text style={styles.btnTextBack}>Назад</Text>
-                        </View>    
-                    </TouchableOpacity>
+                    <View style={{ marginBottom: -70 }}>
+                        <Button name='Назад' bgColor='white' color='#323232' icon={ faArrowLeftLong } onPress={() => goBack()}/>
+                    </View>
                 </View>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
