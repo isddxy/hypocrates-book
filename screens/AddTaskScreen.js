@@ -7,17 +7,18 @@ import {
     Text,
     Platform,
     TouchableWithoutFeedback,
-    Button,
     Keyboard,
-    Alert,
     TouchableOpacity,
 } from 'react-native';
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
+import { firebase } from '../db/config';
+import  {collection,addDoc} from 'firebase/firestore';
 
-const AddTask = ({navigation: { goBack } }) => {
+
+export default function AddTaskScreen({ navigation }) {
 
     const [inputContent, setInputContent] = useState({});
     const [errorStyle, setErrorStyle] = useState('none');
@@ -52,23 +53,19 @@ const AddTask = ({navigation: { goBack } }) => {
         setErrorStatus(true);
     }
 
-    // const saveTask = async () => {
-    //     if (!inputContent.value.length) {
-    //         console.log('Пусто');
-    //     } else {
-    //         console.log(inputContent);
-    //     }
-    //     // const db = firebase.firestore();
-    //     // const taskRef = db.collection('tasks');
-    //     // //const snapshot = await taskRef.get();
-    //     // const snapshot = await taskRef.where('isInbox', '==', true).get();
-    //     // if (snapshot.empty) {
-    //     //     console.log('Сегодня нет еще задач');
-    //     //     return;
-    //     // }
-    //     // const allInboxs = snapshot.docs.map(doc => doc.data());
-    //     // setInbox(allInboxs);
-    // };
+    const saveTask = async () => {
+        console.log(isErrorStatus);
+        if (!isErrorStatus) {
+            const db = firebase.firestore();
+            await addDoc(collection(db, "tasks"), {
+                "name": inputContent.value,
+                "isInbox": true
+            });
+            navigation.navigate("Tasks")
+        } else {
+            setError('Введите текст');
+        }
+    };
 
     return (
         <KeyboardAvoidingView
@@ -84,7 +81,7 @@ const AddTask = ({navigation: { goBack } }) => {
                             autoFocus={true}
                             returnKeyType='send'
                             value={inputContent.value}
-                            onSubmitEditing={() => Alert.alert('Отправка')}
+                            onSubmitEditing={() => saveTask()}
                             onChangeText={(text) => checkLength(text)}
                         />
                         <TouchableOpacity onPress={() => clearInput()} style={styles.btnClear}>
@@ -94,7 +91,7 @@ const AddTask = ({navigation: { goBack } }) => {
                             <Text style={{display: errorStyle, color: '#E56363'}}>{ errorText }</Text>
                         </View>
                     </View>
-                    <TouchableOpacity style={styles.btnsView} onPress={() => goBack()}>
+                    <TouchableOpacity style={styles.btnsView} onPress={() => navigation.navigate("Tasks")}>
                         <View style={styles.btnBack}>
                             <FontAwesomeIcon icon={ faArrowLeftLong } size={ 18 }/>
                             <Text style={styles.btnTextBack}>Назад</Text>
@@ -163,5 +160,3 @@ const styles = StyleSheet.create({
         marginLeft: 6
     }
 });
-
-export default AddTask;

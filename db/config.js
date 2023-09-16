@@ -17,4 +17,20 @@ if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 
+
+const db = firebase.firestore();
+
+export const getTasks = () => {
+    return db.collection('tasks')
+        .get()
+        .then(result => result.docs)
+        .then(docs => docs.map(doc => ({
+        id: doc.id,
+        name: doc.data().name,
+        createdAt: doc.data().createdAt,
+        completedAt: doc.data().completedAt,
+        isTask: doc.data().isTask,
+        })))
+}
+
 export { firebase };

@@ -1,12 +1,11 @@
-import { StyleSheet, Text, View, Button, FlatList, StatusBar, TouchableOpacity, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
-import { firebase } from '../config';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { getTasks } from '../db/config';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faBars, faListAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faFolderClosed } from '@fortawesome/free-regular-svg-icons';
+import TaskItem from '../component/TaskItem';
 
 
 
@@ -15,56 +14,37 @@ export default function TasksScreen({ navigation }) {
   const insets = useSafeAreaInsets();
 
   const [tasks, setTask] = useState([]);
-  const [inboxs, setInbox] = useState([]);
+
 
   useEffect(() => {
-    getTasks()
-    getInboxs()
+    getTasks().then(tasks => setTask(tasks))
+    console.log(tasks);
   }, []);
 
-  const getTasks = async () => {
-    setTask({});
-    const db = firebase.firestore();
-    const taskRef = db.collection('tasks');
-    //const snapshot = await taskRef.get();
-    const snapshot = await taskRef.where('isInbox', '==', false).get();
-    if (snapshot.empty) {
-      console.log('Сегодня нет еще задач');
-      return;
-    }
-    const allTasks = snapshot.docs.map(doc => doc.data());
-    setTask(allTasks);
-  };
-
-  const getInboxs = async () => {
-    setTask({});
-    const db = firebase.firestore();
-    const taskRef = db.collection('tasks');
-    //const snapshot = await taskRef.get();
-    const snapshot = await taskRef.where('isInbox', '==', true).get();
-    if (snapshot.empty) {
-      console.log('Сегодня нет еще задач');
-      return;
-    }
-    const allInboxs = snapshot.docs.map(doc => doc.data());
-    setInbox(allInboxs);
-  };
-
-  const Item = ({title}) => (
-    <View style={styles.item}>
-      <Text style={styles.taskName}>{title}</Text>
-    </View>
-  );
-
+  // const getTasks = async () => {
+  //   setTask({});
+  //   const db = firebase.firestore();
+  //   const taskRef = db.collection('tasks');
+  //   //const snapshot = await taskRef.get();
+  //   const snapshot = await taskRef.where('isTask', '==', true).get();
+  //   if (snapshot.empty) {
+  //     console.log('Сегодня нет еще задач');
+  //     return;
+  //   }
+  //   const allTasks = snapshot.docs.map(doc => doc.data());
+  //   setTask(allTasks);
+  // };
 
   return (
+    <View style={{
+      flex: 1,
+    }}
+    >
     <View
       style={{
         flex: 1,
         justifyContent: 'space-between',
         alignItems: 'center',
-
-        // Paddings to handle safe area
         paddingTop: insets.top,
         paddingBottom: insets.bottom,
         paddingLeft: insets.left + 10,
@@ -72,50 +52,55 @@ export default function TasksScreen({ navigation }) {
       }}
     >
       <Text style={styles.title}>Сегодня</Text>
-      <FlatList
+        <View style={styles.tasksView}>
+      {/* <FlatList
         style={
           {
             width: '100%',
           }
         }
         data={tasks}
-        renderItem={({item}) => <TouchableOpacity onPress={() => navigation.navigate("ViewTask")}><Item title={item.name} /></TouchableOpacity>}
-        keyExtractor={item => item.id}
+        renderItem={({item}) => <TouchableOpacity  onPress={() => {
+          navigation.navigate('ViewTask', {item});
+        }}><Item title={item.name} /></TouchableOpacity>}
+        //keyExtractor={item => item.id}
       />
-
-      <Text style={styles.title}>Входящие</Text>
-      <FlatList
-        style={
+      */}
+      {/* {
+        tasks?.map(task => <View style={styles.item}>
+          <Text style={styles.taskName}>{task.name}</Text>
+          </View>)
+      } */}
           {
-            width: '100%',
-            height: 100,
+            tasks?.map(task => <TouchableOpacity key={task.id} onPress={() => {
+              navigation.navigate('ViewTask', task.id);
+            }}><TaskItem item={task} /></TouchableOpacity>)
           }
-        }
-        data={inboxs}
-        renderItem={({item}) => <TouchableOpacity onPress={() => navigation.navigate("ViewTask")}><Item title={item.name} /></TouchableOpacity>}
-        keyExtractor={item => item.id}
-      />
-{/* 
-      <Button
-        title="Добавить задачу"
-        onPress={() => navigation.navigate('AddTask')}
-      /> */}
-
-      <TouchableOpacity style={styles.btnAddTask} onPress={() => navigation.navigate('AddTask')}>
-        <FontAwesomeIcon icon={ faPlus } size={ 24 } color='white' />
-        {/* <Text style={styles.btnTextAddTask}>Добавить задачу</Text> */}
-      </TouchableOpacity>   
-      {/* <Button
-        title="Давай крутить колесо"
-        onPress={() => navigation.push('Spin')}
-      /> */}
+        </View>
+      </View> 
+      
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.btnAddTask} onPress={() => navigation.navigate('AddTask')}>
+          <FontAwesomeIcon icon={ faPlus } size={ 24 } color='#3F97E8' />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.btnInbox} onPress={() => navigation.navigate('Inbox')}>
+          <FontAwesomeIcon icon={ faBars } size={ 20 } color='#3F97E8' />
+        </TouchableOpacity> 
+        <TouchableOpacity style={styles.btnProject} onPress={() => navigation.navigate('Project')}>
+          <FontAwesomeIcon icon={ faFolderClosed } size={ 18 } color='black' />
+          <Text style={styles.btnTextProject}>Мои проекты</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  tasksView: {
     flex: 1,
+    width: '100%',
+    justifyContent: 'flex-end',
+    marginBottom: 300
   },
   item: {
     backgroundColor: '#FBFBFB',
@@ -135,13 +120,49 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   btnAddTask: {
-    backgroundColor: '#48B16C',
-    width: '96%',
+    backgroundColor: '#fff',
+    width: '100%',
     marginTop: 30,
+    borderRadius: 16,
+    paddingVertical: 16,
+    paddingVertical: 50,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderStyle: 'dashed',
+    borderColor: '#C0DDF7'
+  },
+  btnInbox: {
+    backgroundColor: '#EFF7FF',
+    width: '100%',
+    marginTop: 16,
     borderRadius: 16,
     paddingVertical: 16,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
   },
+  btnProject: {
+    width: '100%',
+    marginTop: 16,
+    borderRadius: 16,
+    paddingVertical: 16,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  btnTextProject: {
+    marginLeft: 6,
+  },
+  footer: {
+    backgroundColor: '#fff',
+    width: '100%',
+    position: 'absolute',
+    bottom: 0,
+    paddingBottom: 30,
+    alignItems: 'center',
+    paddingLeft: 20,
+    paddingRight: 20,
+  }
 });
