@@ -22,7 +22,8 @@ export default function TasksScreen({ navigation }) {
       name: document.data().name,
       isTask: document.data().isTask,
       createdAt: document.data().createdAt,
-      completedAt: document.data().completedAt
+      completedAt: document.data().completedAt,
+      isActive: document.data().isTask,
     }
   }
 
@@ -43,24 +44,28 @@ export default function TasksScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar barStyle='dark-content'/>
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingTop: insets.top,
-        paddingBottom: insets.bottom,
-        paddingLeft: insets.left + 20,
-        paddingRight: insets.right + 20,
-      }}
-    >
-      <Text style={styles.title}>Сегодня</Text>
-        <ScrollView style={styles.tasksView}>
-          {
-            tasks?.map(task =><TaskItem item={task} key={task.id}/>)
-          }
-        </ScrollView>
-      </View> 
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom,
+          paddingLeft: insets.left + 20,
+          paddingRight: insets.right + 20,
+        }}
+      >
+        <Text style={styles.title}>Сегодня</Text>
+          <ScrollView contentContainerStyle={{
+              flexGrow: 1,
+              justifyContent: 'flex-end',
+              marginBottom: 320,
+          }}>
+            {
+              tasks?.map(task =><TaskItem item={task} key={task.id}/>)
+            }
+          </ScrollView>
+        </View> 
       
       <View style={styles.footer}>
         <TouchableOpacity style={styles.btnAddTask} onPress={() => navigation.navigate('AddTask')}>

@@ -59,7 +59,8 @@ export default function AddTaskScreen({ navigation, navigation: { goBack } }) {
                 name: inputContent.value,
                 isTask: false,
                 createdAt: new Date(),
-                completedAt: null
+                completedAt: null,
+                isActive: true,
             }).then(result => navigation.navigate("Inbox"))
                 .catch(err => console.log(err))
         } else {

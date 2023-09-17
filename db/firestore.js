@@ -44,7 +44,7 @@ const db = firebase.firestore();
 // }
 
 export const streamTasks = (observer) => {
-    db.collection('tasks').where('isTask', '==', true).onSnapshot(observer)
+    db.collection('tasks').where('isActive', '==', true).where('isTask', '==', true).onSnapshot(observer)
 }
 
 export const streamProjects = (observer) => {
@@ -52,7 +52,7 @@ export const streamProjects = (observer) => {
 }
 
 export const streamInboxs = (observer) => {
-    db.collection('tasks').where('isTask', '==', false).onSnapshot(observer)
+    db.collection('tasks').where('isActive', '==', true).where('isTask', '==', false).onSnapshot(observer)
 }
 
 export default db;

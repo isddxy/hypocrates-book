@@ -2,9 +2,8 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import db from '../db/firestore';
-import { faArrowLeftLong, faCheck, faClipboard } from '@fortawesome/free-solid-svg-icons';
-import { doc, deleteDoc } from "firebase/firestore";
-import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
+import { faArrowLeftLong, faTrashCan, faCheck, faClipboard, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+import { doc, deleteDoc, updateDoc } from "firebase/firestore";
 import Button from '../component/Button';
 
 
@@ -23,26 +22,61 @@ export default function ViewTaskScreen({ route, navigation, navigation: { goBack
         }
     }
 
+    function getDoneButton() {
+        if (task.isTask) {
+            if (!task.completedAt) {
+                return <Button bgColor='#C2FFC0' color='#186C15' icon={ faCheck } onPress={() => setDone()}/>;
+            } else {
+                return <Button name='Не готово' bgColor='#F5F5F5' color='#7C8694' icon={ faRotateRight } onPress={() => setNotDone()}/>;
+            }
+        } 
+    }
+    
+
     const removeTask = async () => {
         await deleteDoc(doc(db, "tasks", task.id))
             .then(result => navigation.navigate("Tasks"));
     };
 
+    const taskToArchive = async () => {
+        await updateDoc(doc(db, 'tasks', task.id), {
+            isActive: false,
+        }).then(result => navigation.navigate("Tasks"));
+    };
+
+    const setDone = async () => {
+        await updateDoc(doc(db, 'tasks', task.id), {
+                completedAt: new Date(),
+            }).then(result => navigation.navigate("Tasks"));
+    };
+
+    const setNotDone = async () => {
+        await updateDoc(doc(db, 'tasks', task.id), {
+                completedAt: null,
+            }).then(result => navigation.navigate("Tasks"));
+    };
+
     return (
         <View
             style={{
-            flex: 1,
-            backgroundColor: getBackground(),
-            justifyContent: 'flex-start',
-            alignItems: 'left',
-            paddingTop: insets.top,
-            paddingBottom: insets.bottom,
-            paddingLeft: insets.left + 20,
-            paddingRight: insets.right + 20,
+                flex: 1,
+                backgroundColor: getBackground(),
+                justifyContent: 'flex-start',
+                alignItems: 'left',
+                paddingTop: insets.top,
+                paddingBottom: insets.bottom,
+                paddingLeft: insets.left + 20,
+                paddingRight: insets.right + 20,
             }}
         >
             <Text>Просмотр задачи</Text>
-            <Text style={styles.title}>{task.name}</Text>
+            <View style={styles.top}>
+                <Text style={styles.title}>{task.name}</Text>
+                <View style={styles.removeBtn}>
+                    <Button bgColor='#FFF3F3' color='#C34E4E' icon={ faTrashCan } onPress={() => taskToArchive()}/>
+                </View>
+            </View>
+            
             <View style={styles.info}>
                 <Text style={styles.subtitle}>Первое действие</Text>
                 <Text style={styles.text}>- Написать Алексею в телеграм</Text>
@@ -54,11 +88,13 @@ export default function ViewTaskScreen({ route, navigation, navigation: { goBack
 
 
             <View style={styles.info}>
-                <Button bgColor='#FFF8EF' color='#B04B2B' icon={ faClipboard } onPress={() => navigation.navigate("ReviewInbox")}/>
-                <Button name='Удалить' bgColor='#FFDBDB' color='#C34E4E' icon={ faTrashCan } onPress={() => removeTask()}/>
+                <Button name='Разобрать' bgColor='#FFF8EF' color='#B04B2B' icon={ faClipboard } onPress={() => navigation.navigate("ReviewInbox")}/>
+               
             </View>
             <View style={styles.footer}>
-                <Button bgColor='#C2FFC0' color='#186C15' icon={ faCheck } onPress={() => navigation.navigate("Tasks")}/>
+                {
+                    getDoneButton()
+                }
                 <Button name='Назад' bgColor='#' color='#7E7E7E' icon={ faArrowLeftLong } onPress={() => goBack()}/>
             </View>
 
@@ -67,14 +103,20 @@ export default function ViewTaskScreen({ route, navigation, navigation: { goBack
 }
 
 const styles = StyleSheet.create({
+    top:{
+        flexDirection: 'row',
+        marginTop: 30
+    },
     title: {
         color: 'black',
         fontSize: 48,
         textAlign: 'left',
-        width: '100%',
+        width: '80%',
         lineHeight: 50,
         fontWeight: 'bold',
-        marginTop: 30
+    },
+    removeBtn: {
+        width: '20%',
     },
     info: {
         paddingTop: 30,
