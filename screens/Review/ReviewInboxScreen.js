@@ -1,11 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import { PanResponder, View, Animated , Dimensions, Text, StyleSheet } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { questions as questionsArray } from "../db/questions";
-import QuestionCard from '../component/QuestionCard';
-import Button from '../component/Button';
+import { questions as questionsArray } from "../../db/questions";
+import QuestionCard from '../../component/QuestionCard';
+import Button from '../../component/Button';
 import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
-import db from '../db/firestore';
+import db from '../../db/firestore';
 import { doc, deleteDoc, updateDoc } from "firebase/firestore";
 
 
@@ -103,24 +103,23 @@ export default function ReviewInboxScreen({ route, navigation, navigation: { goB
   },[swipe]);
 
   // handle user choice (left or right swipe)
-  const handleChoice = useCallback((direction)=>{
-    Animated.timing(swipe.x, {
-      toValue: direction  * 500,
-      duration: 400,
-      useNativeDriver: true
-    }).start(removeTopCard);
+  // const handleChoice = useCallback((direction)=>{
+  //   Animated.timing(swipe.x, {
+  //     toValue: direction  * 500,
+  //     duration: 400,
+  //     useNativeDriver: true
+  //   }).start(removeTopCard);
 
-    console.log('Выбор сделан 2');
+  //   console.log('Выбор сделан 2');
 
-  },[removeTopCard,swipe.x]);
+  // },[removeTopCard,swipe.x]);
 
 
   const updateToTask = async () => {
     await updateDoc(doc(db, 'tasks', task.id), {
         isTask: true,
-    }).then(result => navigation.navigate("Tasks"));
+    }).then(result => navigation.navigate("Home"));
   };
-
 
 
   const backCard = useCallback((id)=>{

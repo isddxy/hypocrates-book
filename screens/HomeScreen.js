@@ -10,7 +10,7 @@ import Button from '../component/Button';
 
 
 
-export default function TasksScreen({ navigation }) {
+export default function HomeScreen({ navigation }) {
 
   const insets = useSafeAreaInsets();
 

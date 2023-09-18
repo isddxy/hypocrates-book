@@ -1,21 +1,20 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import React from 'react'
-import TasksScreen from './screens/TasksScreen'
+import HomeScreen from './screens/HomeScreen'
 import SpinScreen from './screens/SpinScreen';
 import AddTaskScreen from './screens/AddTaskScreen';
 import ViewTaskScreen from './screens/ViewTaskScreen';
-import ProjectScreen from './screens/ProjectScreen';
+import ProjectScreen from './screens/Project/ProjectScreen';
 import InboxScreen from './screens/InboxScreen';
-import ReviewInboxScreen from './screens/ReviewInboxScreen';
-import ReviewAllInboxesScreen from './screens/ReviewAllInboxesScreen';
-
+import ReviewInboxScreen from './screens/Review/ReviewInboxScreen';
+import ReviewAllInboxesScreen from './screens/Review/ReviewAllInboxesScreen';
 
 const Stack = createNativeStackNavigator();
 
-const StackNavigator = () => {
+export default StackNavigator = () => {
   return (
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Tasks" component={TasksScreen} />
+        <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="AddTask" component={AddTaskScreen} />
         <Stack.Screen name="ViewTask" component={ViewTaskScreen} />
         <Stack.Screen name="Spin" component={SpinScreen} />
@@ -27,5 +26,3 @@ const StackNavigator = () => {
     
   )
 }
-
-export default StackNavigator

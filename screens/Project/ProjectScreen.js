@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { streamProjects } from '../db/firestore';
-import TaskItem from '../component/TaskItem';
-import Button from '../component/Button';
+import { streamProjects } from '../../db/firestore';
+import TaskItem from '../../component/TaskItem';
+import Button from '../../component/Button';
 import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
 
 

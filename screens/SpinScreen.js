@@ -110,7 +110,7 @@ export default function SpinScreen({ route, navigation, navigation: {goBack} }) 
 
             <View style={{display: isSpinned}}>
               <View style={{opacity: 1, marginBottom: 12}}>
-                <Button name='Обратно к задачам' bgColor='#F5F5F5' color='black' icon={ faBars } onPress={() => navigation.navigate("Tasks")}/>
+                <Button name='Обратно к задачам' bgColor='#F5F5F5' color='black' icon={ faBars } onPress={() => navigation.navigate("Home")}/>
               </View>
             </View>
 
