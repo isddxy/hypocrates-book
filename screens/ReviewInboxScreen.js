@@ -17,7 +17,9 @@ export default function ReviewInboxScreen({ route, navigation, navigation: { goB
   const task  = route.params;
 
   // State to hold the users data
-  const [questions,setQuestions] = useState(questionsArray);
+  const [questions, setQuestions] = useState(questionsArray);
+
+  const [currentId, setCurrentId] = useState(0);
 
   // if (questions[0].id != 0) {
   //   console.log('Назад зашел');
@@ -67,7 +69,7 @@ export default function ReviewInboxScreen({ route, navigation, navigation: { goB
       } else {
           console.log('ВЫБОР: Нет');
       }
-  
+
       const isActionActive = Math.abs(dx) > 100;
 
       if(isActionActive){
@@ -117,7 +119,26 @@ export default function ReviewInboxScreen({ route, navigation, navigation: { goB
     await updateDoc(doc(db, 'tasks', task.id), {
         isTask: true,
     }).then(result => navigation.navigate("Tasks"));
-};
+  };
+
+
+
+  const backCard = useCallback((id)=>{
+    console.log('ID: ' + id);
+
+    if(id == 0) {
+      goBack();
+    } else {
+      setCurrentId(questions[0].id)
+      setQuestions(questionsArray);
+      setQuestions((prevState)=>prevState.slice(id-1));
+
+      swipe.setValue({ x: 0, y: 0});
+    }
+
+    
+
+  },[currentId,swipe.x]);
 
 
   return (
@@ -126,29 +147,29 @@ export default function ReviewInboxScreen({ route, navigation, navigation: { goB
       <StatusBar hidden={false} />
       {/* Map through users and render Card components */}
         {
-        questions.map(({ id, name, emoji, bgColor, navigate, description }, index )=>{
-          const isFirst = index == 0;
-          const dragHandlers = isFirst ? panResponder.panHandlers : {};
-          return (
-            <QuestionCard
-              key={name}
-              id={id}
-              name={name}
-              description={description}
-              emoji={emoji}
-              bgColor={bgColor}
-              isFirst={isFirst}
-              swipe={swipe}
-              titlSign={titlSign}
-              {...dragHandlers}
-            />
-          )
-        }).reverse()
+          questions.map(({ id, name, emoji, bgColor, navigate, description }, index )=>{
+            const isFirst = index == 0;
+            const dragHandlers = isFirst ? panResponder.panHandlers : {};
+
+            return (
+              <QuestionCard
+                key={name}
+                id={id}
+                name={name}
+                description={description}
+                emoji={emoji}
+                bgColor={bgColor}
+                isFirst={isFirst}
+                swipe={swipe}
+                titlSign={titlSign}
+                {...dragHandlers}
+              />
+            )
+          }).reverse()
         }
-        {/* Render the Footer component */}
         {/* <Footer handleChoice={handleChoice} /> */}
         <View style={styles.footer}>
-          <Button name='Назад' bgColor='#F5F5F5' color='#515965' icon={ faArrowLeftLong } onPress={() => goBack()}/>
+          <Button name='Назад' bgColor='#F5F5F5' color='#515965' icon={ faArrowLeftLong } onPress={() => backCard(questions[0].id)}/>
         </View>
     </View>
   );
