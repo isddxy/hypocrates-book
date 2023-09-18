@@ -3,12 +3,27 @@ import { PanResponder, View, Animated , Dimensions, Text, StyleSheet } from 'rea
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { questions as questionsArray } from "../db/questions";
 import QuestionCard from '../component/QuestionCard';
+import Button from '../component/Button';
+import { faArrowLeftLong } from '@fortawesome/free-solid-svg-icons';
+import db from '../db/firestore';
+import { doc, deleteDoc, updateDoc } from "firebase/firestore";
+
+
 
 const { width, height } = Dimensions.get("screen");
 
-export default function ReviewInboxScreen({ navigation, navigation: { goBack } }) {
+export default function ReviewInboxScreen({ route, navigation, navigation: { goBack } }) {
+
+  const task  = route.params;
+
   // State to hold the users data
   const [questions,setQuestions] = useState(questionsArray);
+
+  // if (questions[0].id != 0) {
+  //   console.log('Назад зашел');
+  // } else {
+  //   console.log('Первый раз зашел');
+  // }
 
   // Animated values for swipe and tilt
   const swipe = useRef(new Animated.ValueXY()).current;
@@ -17,11 +32,11 @@ export default function ReviewInboxScreen({ navigation, navigation: { goBack } }
   useEffect(()=>{
     // Reset users data if the array is empty
     if(!questions.length){
-      console.log('Готово')
-      setQuestions(questionsArray);
+      console.log('Конец')
+      //setQuestions(questionsArray);
+      updateToTask();
     }
   },[questions.length])
-  
 
   // PanResponder configuration
   const panResponder = PanResponder.create({
@@ -29,19 +44,28 @@ export default function ReviewInboxScreen({ navigation, navigation: { goBack } }
     onMoveShouldSetPanResponder: ()=>true,
 
      // Handle card movement while dragging
-    onPanResponderMove: (_, {dx, dy, y0})=>{
+    onPanResponderMove: (_, {dx, dy, y0}) => {
       swipe.setValue({x: dx, y: dy});
       titlSign.setValue(y0 > (height * 0.9) / 2 ? 1 : -1)
     },
 
     // Handle card release after dragging
-    onPanResponderRelease: (_, { dx, dy })=>{
+    onPanResponderRelease: (_, { dx, dy }) => {
       const direction = Math.sign(dx);
 
+      const navigate = questions[0].navigate;
+
+      console.log('Вопрос: ' + questions[0].name);
+
       if (direction > 0) {
-          console.log('Да');
+        console.log('ВЫБОР: Да');
+        if(navigate) {
+          setQuestions(questionsArray);
+          setQuestions((prevState)=>prevState.slice(1));
+          navigation.navigate(navigate, task);
+        }
       } else {
-          console.log('Нет');
+          console.log('ВЫБОР: Нет');
       }
   
       const isActionActive = Math.abs(dx) > 100;
@@ -56,7 +80,6 @@ export default function ReviewInboxScreen({ navigation, navigation: { goBack } }
           },
           useNativeDriver: true
         }).start(removeTopCard);
-        console.log('ВЫБОР СДЕЛАН');
       }else{
         // Return the card to its original position
         Animated.spring(swipe, {
@@ -89,18 +112,27 @@ export default function ReviewInboxScreen({ navigation, navigation: { goBack } }
 
   },[removeTopCard,swipe.x]);
 
+
+  const updateToTask = async () => {
+    await updateDoc(doc(db, 'tasks', task.id), {
+        isTask: true,
+    }).then(result => navigation.navigate("Tasks"));
+};
+
+
   return (
     <View style={{ flex: 1, backgroundColor: "#FDFDFD", alignItems: "center"}}>
-      <Text style={styles.taskName}>Сходить погулять с Денисом</Text>
+      <Text style={styles.taskName}>{ task.name }</Text>
       <StatusBar hidden={false} />
       {/* Map through users and render Card components */}
         {
-        questions.map(({ id, name, emoji, bgColor, description }, index )=>{
+        questions.map(({ id, name, emoji, bgColor, navigate, description }, index )=>{
           const isFirst = index == 0;
           const dragHandlers = isFirst ? panResponder.panHandlers : {};
           return (
             <QuestionCard
               key={name}
+              id={id}
               name={name}
               description={description}
               emoji={emoji}
@@ -115,6 +147,9 @@ export default function ReviewInboxScreen({ navigation, navigation: { goBack } }
         }
         {/* Render the Footer component */}
         {/* <Footer handleChoice={handleChoice} /> */}
+        <View style={styles.footer}>
+          <Button name='Назад' bgColor='#F5F5F5' color='#515965' icon={ faArrowLeftLong } onPress={() => goBack()}/>
+        </View>
     </View>
   );
 }
@@ -127,5 +162,11 @@ const styles = StyleSheet.create({
     width: '80%',
     textAlign: 'center',
     position: 'absolute',
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 50,
+    width: '86%',
+    alignItems: 'center',
   },
 });

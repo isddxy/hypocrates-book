@@ -45,7 +45,7 @@ export default function ProjectScreen({ navigation, navigation: { goBack } }) {
                         inboxs?.map(inbox =><InboxItem item={inbox} key={inbox.id} type='inbox'/>)
                     }
                     <View style={styles.footer}>
-                        <Button name='Подготовиться к завтру' bgColor='#FFF8EF' color='#B04B2B' icon={ faCloudSun } onPress={() => navigation.navigate("ReviewInbox")}/>
+                        <Button name='Подготовиться к завтру' bgColor='#FFF8EF' color='#B04B2B' icon={ faCloudSun } onPress={() => navigation.navigate("ReviewAllInboxes")}/>
                         <Button name='Назад' bgColor='#' color='#7E7E7E' icon={ faArrowLeftLong } onPress={() => goBack()}/>
                     </View>
                 </View>

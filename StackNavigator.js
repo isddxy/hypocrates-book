@@ -7,6 +7,7 @@ import ViewTaskScreen from './screens/ViewTaskScreen';
 import ProjectScreen from './screens/ProjectScreen';
 import InboxScreen from './screens/InboxScreen';
 import ReviewInboxScreen from './screens/ReviewInboxScreen';
+import ReviewAllInboxesScreen from './screens/ReviewAllInboxesScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -21,6 +22,7 @@ const StackNavigator = () => {
         <Stack.Screen name="Inbox" component={InboxScreen} />
         <Stack.Screen name="Project" component={ProjectScreen} />
         <Stack.Screen name="ReviewInbox" component={ReviewInboxScreen} />
+        <Stack.Screen name="ReviewAllInboxes" component={ReviewAllInboxesScreen} />
       </Stack.Navigator>
     
   )

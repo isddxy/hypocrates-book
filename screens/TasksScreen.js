@@ -24,6 +24,7 @@ export default function TasksScreen({ navigation }) {
       createdAt: document.data().createdAt,
       completedAt: document.data().completedAt,
       isActive: document.data().isTask,
+      isSpinned: document.data().isSpinned,
     }
   }
 
@@ -44,22 +45,23 @@ export default function TasksScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar barStyle='dark-content'/>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          paddingTop: insets.top,
-          paddingBottom: insets.bottom,
-          paddingLeft: insets.left + 20,
-          paddingRight: insets.right + 20,
-        }}
-      >
-        <Text style={styles.title}>Сегодня</Text>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom,
+            paddingLeft: insets.left + 20,
+            paddingRight: insets.right + 20,
+          }}
+        >
+          <Text style={styles.title}>Сегодня</Text>
           <ScrollView contentContainerStyle={{
               flexGrow: 1,
               justifyContent: 'flex-end',
               marginBottom: 320,
+              width: '100%',
           }}>
             {
               tasks?.map(task =><TaskItem item={task} key={task.id}/>)

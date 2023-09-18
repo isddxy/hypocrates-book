@@ -88,8 +88,7 @@ export default function ViewTaskScreen({ route, navigation, navigation: { goBack
 
 
             <View style={styles.info}>
-                <Button name='Разобрать' bgColor='#FFF8EF' color='#B04B2B' icon={ faClipboard } onPress={() => navigation.navigate("ReviewInbox")}/>
-               
+                <Button name='Разобрать' bgColor='#FFF8EF' color='#B04B2B' icon={ faClipboard } onPress={() => navigation.navigate("ReviewInbox", task)}/>
             </View>
             <View style={styles.footer}>
                 {

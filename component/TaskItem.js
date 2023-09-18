@@ -12,6 +12,10 @@ export default function TaskItem({item, type}) {
     typeStyle = styles.inbox;
   }
 
+  if (item.isSpinned) {
+    typeStyle = styles.spinned;
+  }
+
   console.log(item)
 
   return (
@@ -39,6 +43,17 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderStyle: 'dashed',
     borderColor: '#ACB2BC'
+  },
+  spinned: {
+    backgroundColor: '#E3CBFF',
+    borderRadius: 16,
+    padding: 12,
+    paddingLeft: 16,
+    marginVertical: 6,
+    width: '100%',
+    borderWidth: 4,
+    borderStyle: 'dashed',
+    borderColor: '#F5F5F5'
   },
   taskName: {
     fontSize: 18,

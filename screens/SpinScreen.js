@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button, Image, SafeAreaView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, Image, StatusBar } from 'react-native';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -20,9 +20,16 @@ import ozon from './../assets/Roulette/lose/ozon.gif';
 import kramer from './../assets/Roulette/lose/kramer.gif';
 import sadWalk from './../assets/Roulette/lose/sad-walk.gif';
 import txtSad from './../assets/Roulette/lose/txt-sad.gif';
+import Button from '../component/Button';
+import { faArrowLeftLong, faBars, faGift, faPlay, faSpinner, faXmark } from '@fortawesome/free-solid-svg-icons';
 
 
-export default function SpinScreen({ navigation }) {
+export default function SpinScreen({ route, navigation, navigation: {goBack} }) {
+
+  const task = route.params;
+
+  const [isSpinned, setSpinned] = useState('none');
+  const [isNotSpinned, setNotSpinned] = useState('flex');
 
   const insets = useSafeAreaInsets();
 
@@ -30,7 +37,7 @@ export default function SpinScreen({ navigation }) {
   const winGifs = [ baby, leonardo, ozon671games, victory];
 
   const [spinResault, setSpinResault] = useState(null);
-  const [title, setTitle] = useState('Крути барабан');
+  const [title, setTitle] = useState('КРУТИ РУЛЕТКУ');
   const [bgGif, setBgGif] = useState(defaultGif);
 
   function getSpin() {
@@ -42,8 +49,9 @@ export default function SpinScreen({ navigation }) {
   }
 
   function showRouletteResult() {
-    let winMessage = '🎉\nТебе повезло - делай то что захотел';
-    let loseMessage = 'Не чувак, у тебя есть дела по важнее';
+    setSpinned(true);
+    let winMessage = '🎉\nТебе повезло\nМожешь бахать!!';
+    let loseMessage = '😭😭😭\nТебе не повезло';
 
     let gifNumber1 = 0;
     let gifNumber = 0;
@@ -65,11 +73,13 @@ export default function SpinScreen({ navigation }) {
 
     console.log('isWin: ' + spinResault)
     console.log('GIF: ' + gifNumber)
+    setSpinned('flex');
+    setNotSpinned('none');
   }
-
+  
   return (
     <View style={styles.container}>
-      
+      <StatusBar hidden={true} />
       <Image
             style ={{width: "100%", height:"100%"}}
             source={bgGif}
@@ -83,58 +93,53 @@ export default function SpinScreen({ navigation }) {
           // Paddings to handle safe area
           paddingTop: insets.top,
           paddingBottom: insets.bottom,
-          paddingLeft: insets.left,
-          paddingRight: insets.right,
+          paddingLeft: insets.left + 30,
+          paddingRight: insets.right + 30,
           position: 'absolute',
           width: '100%',
           height: '100%',
         }}
       >
-        <Text style={styles.title}>{ title }</Text>
-        <View>
-        <View style={styles.button}>
-          <Button
-          onPress={() => showRouletteResult()}
-          title="Крутить колесо"
-          color = "white"
-          accessibilityLabel="Learn more about this purple button"
-        /></View>
-        {/* <Text style={styles.count}>Осталось 5 попыток</Text> */}
-        <Button title="Назад" color='white' onPress={() => navigation.goBack()} />
+        <View style={styles.content}>
+          <Text style={styles.taskName}>{ task.name }</Text>
+          <Text style={styles.title}>{ title }</Text>
         </View>
+
+
+        <View style={styles.footer}>
+
+            <View style={{display: isSpinned}}>
+              <View style={{opacity: 1, marginBottom: 12}}>
+                <Button name='Обратно к задачам' bgColor='#F5F5F5' color='black' icon={ faBars } onPress={() => navigation.navigate("Tasks")}/>
+              </View>
+            </View>
+
+            <View style={{display: isNotSpinned}}>
+              <Button name='Начать' bgColor='black' color='white' icon={ faPlay } onPress={() => showRouletteResult()}/>
+              <View style={{opacity: 1, marginTop: 8}}>
+                <Button name='Назад' bgColor='#' color='#fff' icon={ faArrowLeftLong } onPress={() => navigation.navigate("ReviewInbox", task)}/>
+              </View>
+            </View>
+
+        </View>
+
       </View>
-      
-      {/* <Swiper
-          cards={['Приближает тебя к твоим глобальным целям?', 'Это требует действия?', 'Это можно сделать за 2 мин?', 'WHAT', 'MAKES', 'YOU', 'HAPPY']}
-          renderCard={(card) => {
-              return (
-                  <View style={styles.card}>
-                      <Text style={styles.text}>{card}</Text>
-                  </View>
-              )
-          }}
-          onSwiped={(cardIndex) => {console.log(cardIndex)}}
-          onSwipedAll={() => {console.log('onSwipedAll')}}
-          cardIndex={0}
-          backgroundColor={'#4FD0E9'}
-          stackSize= {2}>
-      </Swiper> */}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  button: {
-    alignItems: 'center',
-    borderColor: '#E8E8E8',
+  content: {
+    width: '100%',
+    marginHorizontal: 30,
     justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 30,
-    elevation: 3,
-    backgroundColor: 'black',
+    alignItems: 'center',
+    marginTop: 200,
+  },
+  taskName: {
     color: 'white',
-    marginBottom: 20,
+    opacity: 0.5,
+    fontSize: 24
   },
   container: {
     flex: 1,
@@ -149,10 +154,12 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'white',
-    fontSize: 64,
-    textAlign: 'left',
+    fontSize: 60,
+    textAlign: 'center',
     paddingBottom: 300,
-    width: '86%',
+    marginTop: 30,
+    width: '100%',
+    lineHeight: 68,
   },
   count: {
     color: 'white',
@@ -178,5 +185,11 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: 'white',
     backgroundColor: 'transparent'
-  }
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 30,
+    width: '80%',
+    alignItems: 'center',
+  },
 })
