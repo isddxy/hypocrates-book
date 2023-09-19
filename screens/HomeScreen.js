@@ -25,6 +25,8 @@ export default function HomeScreen({ navigation }) {
       completedAt: document.data().completedAt,
       isActive: document.data().isTask,
       isSpinned: document.data().isSpinned,
+      firstAction:  document.data().firstAction,
+      wantResult: document.data().wantResult,
     }
   }
 
@@ -96,7 +98,7 @@ const styles = StyleSheet.create({
   },
   item: {
     backgroundColor: '#FBFBFB',
-    borderRadius: 16,
+    borderRadius: 24,
     padding: 12,
     paddingLeft: 16,
     marginVertical: 6,
@@ -115,7 +117,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     width: '100%',
     marginVertical: 20,
-    borderRadius: 16,
+    borderRadius: 24,
     paddingVertical: 16,
     paddingVertical: 50,
     flexDirection: 'row',
@@ -129,7 +131,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#EFF7FF',
     width: '100%',
     marginTop: 16,
-    borderRadius: 16,
+    borderRadius: 24,
     paddingVertical: 16,
     flexDirection: 'row',
     justifyContent: 'center',
@@ -138,7 +140,7 @@ const styles = StyleSheet.create({
   btnProject: {
     width: '100%',
     marginTop: 16,
-    borderRadius: 16,
+    borderRadius: 24,
     paddingVertical: 16,
     flexDirection: 'row',
     justifyContent: 'center',

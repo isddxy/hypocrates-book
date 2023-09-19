@@ -8,7 +8,7 @@ export default function InboxItem({item, type}) {
     console.log(item)
 
     return (
-            <TouchableOpacity style={styles.inbox} onPress={() => {navigation.navigate('ViewTask', item)}}>
+            <TouchableOpacity style={styles.inbox} onPress={() => navigation.navigate("ReviewInbox", item)}>
             <Text style={styles.taskName}>{item.name}</Text>
             </TouchableOpacity>
         )

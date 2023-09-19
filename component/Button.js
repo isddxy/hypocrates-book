@@ -24,7 +24,7 @@ export default function Button({name, bgColor, color, icon, onPress}) {
                     backgroundColor: bgColor,
                     width: '100%',
                     marginBottom: 0,
-                    borderRadius: 16,
+                    borderRadius: 24,
                     paddingVertical: 24,
                     flexDirection: 'row',
                     justifyContent: 'center',

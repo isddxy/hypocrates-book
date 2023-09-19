@@ -20,7 +20,7 @@ export const questions = [
     },
     {
         id: 3,
-        name: 'Сделаешь\nза 2 мин?',
+        name: 'Сейчас сделаешь\nза 2 мин?',
         emoji: '⏳',
         bgColor: '#C9E5D9',
     },

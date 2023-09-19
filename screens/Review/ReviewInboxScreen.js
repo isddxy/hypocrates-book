@@ -36,7 +36,8 @@ export default function ReviewInboxScreen({ route, navigation, navigation: { goB
     if(!questions.length){
       console.log('Конец')
       //setQuestions(questionsArray);
-      updateToTask();
+      navigation.navigate('AddFirstAction', task);
+      //updateToTask();
     }
   },[questions.length])
 
@@ -61,13 +62,28 @@ export default function ReviewInboxScreen({ route, navigation, navigation: { goB
 
       if (direction > 0) {
         console.log('ВЫБОР: Да');
+
+        if(questions[0].id == 1) {
+          setQuestions((prevState)=>prevState.slice(1));
+        }
+
+        if(questions[0].id == 3) {
+          navigation.navigate("GoDoTask")
+        }
+
         if(navigate) {
           setQuestions(questionsArray);
           setQuestions((prevState)=>prevState.slice(1));
           navigation.navigate(navigate, task);
         }
+
+
       } else {
           console.log('ВЫБОР: Нет');
+          if(questions[0].id == 0) {
+            setQuestions((prevState)=>prevState.slice(1));
+          }
+          
       }
 
       const isActionActive = Math.abs(dx) > 100;
@@ -119,6 +135,11 @@ export default function ReviewInboxScreen({ route, navigation, navigation: { goB
     await updateDoc(doc(db, 'tasks', task.id), {
         isTask: true,
     }).then(result => navigation.navigate("Home"));
+  };
+
+  const removeTask = async () => {
+    await deleteDoc(doc(db, "tasks", task.id))
+        .then(result => navigation.navigate("Home"));
   };
 
 
